@@ -101,7 +101,7 @@ class Database:
 
     def fetch_by_request_id(self, request_id):
         query = """
-        SELECT requests.*, responses.status, responses.err_code, responses.err_msg, responses.response_data
+        SELECT requests.*, responses.status, responses.err_code, responses.err_msg, responses.response_data, responses.response_headers
         FROM requests
         LEFT JOIN responses ON requests.request_id = responses.request_id
         WHERE requests.request_id = ?
@@ -114,7 +114,7 @@ class Database:
 
     def fetchall(self) -> list:
         query = """
-        SELECT requests.*, responses.status, responses.err_code, responses.err_msg, responses.response_data
+        SELECT requests.*, responses.status, responses.err_code, responses.err_msg, responses.response_data, responses.response_headers
         FROM requests
         LEFT JOIN responses ON requests.request_id = responses.request_id;
         """

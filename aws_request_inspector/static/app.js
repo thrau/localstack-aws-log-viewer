@@ -17,7 +17,7 @@ function startWebsocketConnection() {
             record["status-class"] = "bg-secondary";
             record["internal"] = "";
             if (record["is_internal"]) {
-                record["internal"] = "yes";
+                record["internal"] = '<span class="badge bg-secondary">internal</span>';
             }
 
             // prepare element
@@ -67,6 +67,18 @@ function loadDetailContainer(item) {
     $.get("./query?request_id=" + requestId, function (data) {
         let doc = data['records'][0];
         doc['request_data_pretty'] = JSON.stringify(JSON.parse(doc['request_data']), undefined, 2);
+
+        let requestHeaders = JSON.parse(doc['request_headers']);
+        doc['request_headers_pretty'] = "";
+        for (let i = 0; i < requestHeaders.length; i++) {
+            doc['request_headers_pretty'] += `${requestHeaders[i][0]}: ${requestHeaders[i][1]}\n`;
+        }
+        let responseHeaders = JSON.parse(doc['response_headers']);
+        doc['response_headers_pretty'] = "";
+        for (let i = 0; i < responseHeaders.length; i++) {
+            doc['response_headers_pretty'] += `${responseHeaders[i][0]}: ${responseHeaders[i][1]}\n`;
+        }
+
         if (doc['err_code'] != null) {
             doc['response_data_pretty'] = JSON.stringify({
                 "error": {
@@ -104,7 +116,7 @@ function app() {
 
             record["internal"] = "";
             if (record["is_internal"]) {
-                record["internal"] = "yes";
+                record["internal"] = '<span class="badge bg-secondary">internal</span>';
             }
         }
         $("#event-records").loadTemplate($("#tpl-event-record"), records);

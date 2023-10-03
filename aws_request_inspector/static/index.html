@@ -4,6 +4,7 @@
   <title>LocalStack AWS Request Stream</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--  <link rel=icon type=image/png sizes=32x32 href=static/favicon-32x32.png>-->
   <script
       src="https://code.jquery.com/jquery-3.7.1.min.js"
       crossorigin="anonymous"></script>
@@ -21,12 +22,12 @@
       <td data-content="timestamp"></td>
       <td data-content="service"></td>
       <td data-content="operation"></td>
-      <td data-content="internal"></td>
       <td data-content="region"></td>
       <td data-content="account_id"></td>
       <td class='request-status-field'>
         <span class="badge" data-class="status-class" data-content="status"></span>
       </td>
+      <td data-content="internal"></td>
     </tr>
   </script>
   <script type="text/html" id="tpl-event-details">
@@ -41,21 +42,34 @@
       <div class="col-sm-6 mb-3 mb-sm-0">
         <div class="card">
           <div class="card-header">
-            <ul class="nav nav-tabs card-header-tabs">
+            <ul class="nav nav-tabs card-header-tabs" role="tablist">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="true" href="#">Request</a>
+                <button class="nav-link active" id="request-tab" data-bs-toggle="tab"
+                        data-bs-target="#request-tab-pane" type="button" role="tab"
+                        aria-controls="request-tab-pane" aria-selected="true">
+                  Request
+                </button>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Raw</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Headers</a>
+                <button class="nav-link" id="request-headers-tab" data-bs-toggle="tab"
+                        data-bs-target="#request-headers-tab-pane" type="button" role="tab"
+                        aria-controls="request-headers-tab-pane" aria-selected="false">
+                  Headers
+                </button>
               </li>
             </ul>
           </div>
           <div class="card-body">
-            <h5 class="card-title">Request</h5>
-            <pre data-content="request_data_pretty"></pre>
+            <div class="tab-content">
+              <div class="tab-pane fade show active" id="request-tab-pane" role="tabpanel"
+                   aria-labelledby="request-tab" tabindex="0">
+                <pre data-content="request_data_pretty"></pre>
+              </div>
+              <div class="tab-pane fade" id="request-headers-tab-pane" role="tabpanel"
+                   aria-labelledby="request-headers-tab" tabindex="0">
+                <pre data-content="request_headers_pretty"></pre>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -64,19 +78,32 @@
           <div class="card-header">
             <ul class="nav nav-tabs card-header-tabs" role="tablist">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="true" href="#">Response</a>
+                <button class="nav-link active" id="response-tab" data-bs-toggle="tab"
+                        data-bs-target="#response-tab-pane" type="button" role="tab"
+                        aria-controls="response-tab-pane" aria-selected="true">
+                  Request
+                </button>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Raw</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Headers</a>
+                <button class="nav-link" id="response-headers-tab" data-bs-toggle="tab"
+                        data-bs-target="#response-headers-tab-pane" type="button" role="tab"
+                        aria-controls="response-headers-tab-pane" aria-selected="false">
+                  Headers
+                </button>
               </li>
             </ul>
           </div>
           <div class="card-body">
-            <h5 class="card-title">Response</h5>
-            <pre data-content="response_data_pretty"></pre>
+            <div class="tab-content">
+              <div class="tab-pane fade show active" id="response-tab-pane" role="tabpanel"
+                   aria-labelledby="response-tab" tabindex="0">
+                <pre data-content="response_data_pretty"></pre>
+              </div>
+              <div class="tab-pane fade" id="response-headers-tab-pane" role="tabpanel"
+                   aria-labelledby="response-headers-tab" tabindex="0">
+                <pre data-content="response_headers_pretty"></pre>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -87,7 +114,7 @@
 <div>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-      <a class="navbar-brand" href="#">Navbar</a>
+      <a class="navbar-brand" href="#">AWS Requests</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
               data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
               aria-expanded="false" aria-label="Toggle navigation">
@@ -96,33 +123,11 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-               data-bs-toggle="dropdown" aria-expanded="false">
-              Dropdown
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="#">Action</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
-            </ul>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled">Disabled</a>
+            <a class="nav-link active" aria-current="page" href="#">Log viewer <span class="p-1">🔍</span></a>
           </li>
         </ul>
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
+        <div class="d-flex">
+        </div>
       </div>
     </div>
   </nav>
@@ -135,10 +140,10 @@
           <th>Timestamp</th>
           <th>Service</th>
           <th>Operation</th>
-          <th>Internal</th>
           <th>Region</th>
           <th>Account</th>
           <th>Status</th>
+          <th></th>
         </tr>
         </thead>
         <tbody id="event-records">
