@@ -45,4 +45,4 @@ class WebApp:
         mimetype = (
             mimetype[0] if mimetype and mimetype[0] else "application/octet-stream"
         )
-        return Response(resource.open("rt"), mimetype=mimetype)
+        return Response(resource.open("rb"), mimetype=mimetype)
