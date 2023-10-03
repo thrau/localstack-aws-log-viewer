@@ -5,7 +5,6 @@ function startWebsocketConnection() {
         let data = event.data
         let doc = JSON.parse(data);
 
-        // $("#event-container").append("<li><pre>" + JSON.stringify(doc, undefined, 2) + "</pre></li>")
         if (doc["type"] === "request") {
             let ts = new Date(doc["timestamp"] * 1000).toISOString();
             let record = doc;
@@ -25,7 +24,7 @@ function startWebsocketConnection() {
             dom.loadTemplate($("#tpl-event-record"), record);
             let row = $(dom[0].firstChild);
             row.on("click", loadDetailContainer);
-            $("#event-records").append(row);
+            $("#event-records").prepend(row);
         }
 
         if (doc["type"] === "response") {
@@ -109,7 +108,7 @@ function loadDetailContainer(item) {
                 }
             }, undefined, 2);
         } else {
-            doc['response_data_pretty'] = JSON.stringify(JSON.parse(doc['response_data']), undefined, 2);
+            doc['response_data_pretty'] = JSON.stringify(deepJsonParse(doc['response_data']), undefined, 2);
         }
 
         $("#event-details").loadTemplate($("#tpl-event-details"), doc);
@@ -125,7 +124,7 @@ function app() {
     });
 
     $.get("./query", function (data) {
-        let records = data['records'];
+        let records = data['records'].reverse();
 
         for (let i = 0; i < records.length; i++) {
             let record = records[i];
