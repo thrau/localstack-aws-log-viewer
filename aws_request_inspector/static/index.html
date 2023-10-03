@@ -11,11 +11,17 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
         crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
           integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
           crossorigin="anonymous"></script>
   <script src="static/jquery.loadTemplate.min.js"></script>
   <script src="static/app.js"></script>
+  <style>
+      .fs-7 {
+          font-size: .8rem
+      }
+  </style>
 
   <script type="text/html" id="tpl-event-record">
     <tr class="request-info" data-id="row-id">
@@ -57,6 +63,13 @@
                   Headers
                 </button>
               </li>
+              <li class="nav-item">
+                <button class="nav-link" id="request-raw-tab" data-bs-toggle="tab"
+                        data-bs-target="#request-raw-tab-pane" type="button" role="tab"
+                        aria-controls="request-raw-tab-pane" aria-selected="false">
+                  Raw
+                </button>
+              </li>
             </ul>
           </div>
           <div class="card-body">
@@ -68,6 +81,10 @@
               <div class="tab-pane fade" id="request-headers-tab-pane" role="tabpanel"
                    aria-labelledby="request-headers-tab" tabindex="0">
                 <pre data-content="request_headers_pretty"></pre>
+              </div>
+              <div class="tab-pane fade" id="request-raw-tab-pane" role="tabpanel"
+                   aria-labelledby="request-raw-tab" tabindex="0">
+                <p class="d-flex flex-wrap font-monospace fs-7" data-content="request_data"></p>
               </div>
             </div>
           </div>
@@ -91,6 +108,13 @@
                   Headers
                 </button>
               </li>
+              <li class="nav-item">
+                <button class="nav-link" id="response-raw-tab" data-bs-toggle="tab"
+                        data-bs-target="#response-raw-tab-pane" type="button" role="tab"
+                        aria-controls="response-raw-tab-pane" aria-selected="false">
+                  Raw
+                </button>
+              </li>
             </ul>
           </div>
           <div class="card-body">
@@ -102,6 +126,10 @@
               <div class="tab-pane fade" id="response-headers-tab-pane" role="tabpanel"
                    aria-labelledby="response-headers-tab" tabindex="0">
                 <pre data-content="response_headers_pretty"></pre>
+              </div>
+              <div class="tab-pane fade" id="response-raw-tab-pane" role="tabpanel"
+                   aria-labelledby="response-raw-tab" tabindex="0">
+                <p class="d-flex flex-wrap font-monospace fs-7" data-content="response_data"></p>
               </div>
             </div>
           </div>
@@ -132,29 +160,42 @@
     </div>
   </nav>
 
-  <main>
-    <div class="container my-5">
-      <table class="table table-sm table-hover">
-        <thead>
-        <tr>
-          <th>Timestamp</th>
-          <th>Service</th>
-          <th>Operation</th>
-          <th>Region</th>
-          <th>Account</th>
-          <th>Status</th>
-          <th></th>
-        </tr>
-        </thead>
-        <tbody id="event-records">
-        </tbody>
-      </table>
-
-      <div class="border-top mt-5 pt-3">
-        <div id="event-details">
-        </div>
+  <div class="container">
+    <div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      <h2 class="h3">AWS Request Log</h2>
+      <div class="btn-toolbar mb-2 mb-md-0">
+        <button id="clear-log-button" type="button"
+                class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1">
+          Clear <i class="bi-bucket-fill"></i>
+        </button>
       </div>
     </div>
+    <table class="table table-sm table-hover">
+      <thead>
+      <tr>
+        <th>Timestamp</th>
+        <th>Service</th>
+        <th>Operation</th>
+        <th>Region</th>
+        <th>Account</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody id="event-records">
+      </tbody>
+    </table>
+
+    <div class="mt-5 pt-3">
+      <div
+          class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h2 class="h3">Details</h2>
+      </div>
+      <div id="event-details">
+      </div>
+    </div>
+  </div>
   </main>
 </div>
 </body>

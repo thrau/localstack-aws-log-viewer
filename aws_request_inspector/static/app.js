@@ -57,6 +57,28 @@ function startWebsocketConnection() {
     };
 }
 
+function deepJsonParse(text) {
+    const parseRecursive = (obj) => {
+        for (const key in obj) {
+            if (typeof obj[key] === 'string' && obj[key].startsWith('{')) {
+                try {
+                    obj[key] = JSON.parse(obj[key]);
+                } catch (error) {
+                    // Handle JSON parsing error
+                    console.error(`Error parsing JSON at key '${key}': ${error.message}`);
+                }
+            } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+                parseRecursive(obj[key]); // Recursively parse nested objects
+            }
+        }
+    };
+
+    let doc = JSON.parse(text);
+    parseRecursive(doc);
+    return doc;
+}
+
+
 function loadDetailContainer(item) {
     let requestId = item.currentTarget.id.slice(8);
     $("#event-records tr").removeClass("table-active");
@@ -66,7 +88,7 @@ function loadDetailContainer(item) {
     );
     $.get("./query?request_id=" + requestId, function (data) {
         let doc = data['records'][0];
-        doc['request_data_pretty'] = JSON.stringify(JSON.parse(doc['request_data']), undefined, 2);
+        doc['request_data_pretty'] = JSON.stringify(deepJsonParse(doc['request_data']), undefined, 2);
 
         let requestHeaders = JSON.parse(doc['request_headers']);
         doc['request_headers_pretty'] = "";
@@ -95,8 +117,12 @@ function loadDetailContainer(item) {
 }
 
 function app() {
-
     startWebsocketConnection();
+
+    $("#clear-log-button").on("click", function(item){
+        $("#event-records").html("");
+        $("#event-details").html("");
+    });
 
     $.get("./query", function (data) {
         let records = data['records'];
