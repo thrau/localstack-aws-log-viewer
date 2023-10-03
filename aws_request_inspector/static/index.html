@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <title>LocalStack AWS Request Stream</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+        crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+          crossorigin="anonymous"></script>
+  <script src="static/jquery.loadTemplate.min.js"></script>
+  <script src="static/app.js"></script>
+
+  <script type="text/html" id="tpl-event-record">
+    <tr class="request-info" data-id="row-id">
+      <td data-content="timestamp"></td>
+      <td data-content="service"></td>
+      <td data-content="operation"></td>
+      <td data-content="internal"></td>
+      <td data-content="region"></td>
+      <td data-content="account_id"></td>
+      <td class='request-status-field'>
+        <span class="badge" data-class="status-class" data-content="status"></span>
+      </td>
+    </tr>
+  </script>
+  <script type="text/html" id="tpl-event-details">
+    <div class="row" hidden="hidden">
+      <div data-content="request_id"></div>
+      <div data-content="service"></div>
+      <div data-content="operation"></div>
+      <div data-content="region"></div>
+      <div data-content="account_id"></div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6 mb-3 mb-sm-0">
+        <div class="card">
+          <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="true" href="#">Request</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Raw</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Headers</a>
+              </li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Request</h5>
+            <pre data-content="request_data_pretty"></pre>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="true" href="#">Response</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Raw</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Headers</a>
+              </li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Response</h5>
+            <pre data-content="response_data_pretty"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </script>
+</head>
+<body>
+<div>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="#">Navbar</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+              aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+               data-bs-toggle="dropdown" aria-expanded="false">
+              Dropdown
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="#">Action</a></li>
+              <li><a class="dropdown-item" href="#">Another action</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><a class="dropdown-item" href="#">Something else here</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled">Disabled</a>
+          </li>
+        </ul>
+        <form class="d-flex" role="search">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container my-5">
+      <table class="table table-sm table-hover">
+        <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Service</th>
+          <th>Operation</th>
+          <th>Internal</th>
+          <th>Region</th>
+          <th>Account</th>
+          <th>Status</th>
+        </tr>
+        </thead>
+        <tbody id="event-records">
+        </tbody>
+      </table>
+
+      <div class="border-top mt-5 pt-3">
+        <div id="event-details">
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>
