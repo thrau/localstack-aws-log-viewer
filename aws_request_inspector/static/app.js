@@ -16,7 +16,7 @@ function startWebsocketConnection() {
             record["status-class"] = "bg-secondary";
             record["internal"] = "";
             if (record["is_internal"]) {
-                record["internal"] = '<span class="badge bg-secondary">internal</span>';
+                record["internal"] = '<span class="badge bg-secondary is-internal">internal</span>';
             }
 
             // prepare element
@@ -24,12 +24,16 @@ function startWebsocketConnection() {
             dom.loadTemplate($("#tpl-event-record"), record);
             let row = $(dom[0].firstChild);
             row.on("click", loadDetailContainer);
+
+            if (record["is_internal"] && !$("#showInternalSwitch").is(':checked')) {
+                row.attr("hidden", true);
+            }
+
             $("#event-records").prepend(row);
         }
 
         if (doc["type"] === "response") {
             let containerId = "#request-" + doc['request_id'];
-            console.log(doc);
             let record = doc;
 
             let label = $(containerId + " .request-status-field > span");
@@ -118,17 +122,27 @@ function loadDetailContainer(item) {
 function app() {
     startWebsocketConnection();
 
-    $("#clear-log-button").on("click", function(item){
+    $("#clear-log-button").on("click", function (item) {
         $("#event-records").html("");
         $("#event-details").html("");
     });
+
+    const updateInternalRequests = () => {
+        let hidden = !$("#showInternalSwitch").is(':checked');
+
+        let internal = $("#event-records tr span.is-internal");
+        for (let i = 0; i < internal.length; i++) {
+            $(internal[i].parentNode.parentNode).attr("hidden", hidden);
+        }
+    }
+
+    $("#showInternalSwitch").on("change", updateInternalRequests);
 
     $.get("./query", function (data) {
         let records = data['records'].reverse();
 
         for (let i = 0; i < records.length; i++) {
             let record = records[i];
-            console.log(record);
 
             record["row-id"] = "request-" + record["request_id"];
             if (record["status"] >= 500) {
@@ -141,11 +155,12 @@ function app() {
 
             record["internal"] = "";
             if (record["is_internal"]) {
-                record["internal"] = '<span class="badge bg-secondary">internal</span>';
+                record["internal"] = '<span class="badge bg-secondary is-internal">internal</span>';
             }
         }
         $("#event-records").loadTemplate($("#tpl-event-record"), records);
         $("#event-records tr").on("click", loadDetailContainer);
+        updateInternalRequests();
     });
 
 }
