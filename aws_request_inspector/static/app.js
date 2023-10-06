@@ -67,18 +67,22 @@ function deepJsonParse(text) {
                 try {
                     obj[key] = JSON.parse(obj[key]);
                 } catch (error) {
-                    // Handle JSON parsing error
-                    console.error(`Error parsing JSON at key '${key}': ${error.message}`);
+                    // try to remove any escaping of curly braces
+                    let jsonString = obj[key].replace(/\\{/g, '{').replace(/\\}/g, '}');
+                    try {
+                        obj[key] = parseRecursive(JSON.parse(jsonString));
+                    } catch(error) {
+                        console.error(`Error parsing JSON at key '${key}': ${error.message}`);
+                    }
                 }
             } else if (typeof obj[key] === 'object' && obj[key] !== null) {
                 parseRecursive(obj[key]); // Recursively parse nested objects
             }
         }
+        return obj;
     };
 
-    let doc = JSON.parse(text);
-    parseRecursive(doc);
-    return doc;
+    return parseRecursive(JSON.parse(text));
 }
 
 
