@@ -3,6 +3,8 @@ from datetime import datetime, date
 from io import IOBase
 from typing import Any
 
+from localstack.config import HostAndPort
+
 
 class ServiceDictEncoder(json.JSONEncoder):
     def default(self, o: Any) -> Any:
@@ -13,4 +15,6 @@ class ServiceDictEncoder(json.JSONEncoder):
             return f"{o.__class__.__name__}()"
         if isinstance(o, bytes):
             return f"bytes({len(o)})"
+        if isinstance(o, HostAndPort):
+            return str(o)
         super().default(o)
