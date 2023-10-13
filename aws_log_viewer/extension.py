@@ -11,7 +11,7 @@ LOG = logging.getLogger(__name__)
 
 
 class MyExtension(Extension):
-    name = "aws-request-inspector"
+    name = "aws-log-viewer"
 
     def __init__(self):
         self.request_collector: RequestCollector | None = None
@@ -19,10 +19,10 @@ class MyExtension(Extension):
         self.log_streamer: LogStreamer | None = None
 
     def on_extension_load(self):
-        logging.getLogger("aws_request_inspector").setLevel(
+        logging.getLogger("aws_log_viewer").setLevel(
             level=logging.DEBUG if config.DEBUG else logging.INFO
         )
-        LOG.info("Loading AWS request inspector")
+        LOG.info("Loading AWS log viewer")
 
         self.database = Database()
         self.request_collector = RequestCollector(self.database)
