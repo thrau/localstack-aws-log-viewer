@@ -1,5 +1,5 @@
 function startWebsocketConnection() {
-    const exampleSocket = new WebSocket("ws://localhost:4566/aws-request-inspector/stream");
+    const exampleSocket = new WebSocket(`ws://${window.location.host}${window.location.pathname}stream`);
 
     exampleSocket.onmessage = (event) => {
         let data = event.data
@@ -170,5 +170,3 @@ function app() {
 }
 
 window.onload = app;
-
-

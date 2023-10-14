@@ -16,24 +16,24 @@ class WebApp:
         self.database = database
         self.log_streamer = log_streamer
 
-    @route("/aws-request-inspector")
+    @route("/")
     def index(self, request: Request, *args, **kwargs):
         if not request.path.endswith("/"):
             return Response(None, status=301, headers={"Location": request.url + "/"})
         return self.load_static_file("index.html")
 
-    @route("/aws-request-inspector/static/<path:path>")
+    @route("/static/<path:path>")
     def static(self, request: Request, path):
         return self.load_static_file(path)
 
-    @route("/aws-request-inspector/query")
+    @route("/query")
     def query(self, request: Request, *args, **kwargs):
         if request_id := request.args.get("request_id"):
             return {"records": self.database.fetch_by_request_id(request_id)}
 
         return {"records": self.database.fetchall()}
 
-    @route("/aws-request-inspector/stream", methods=["WEBSOCKET"])
+    @route("/stream", methods=["WEBSOCKET"])
     def live_stream(self, request, *args, **kwargs):
         return self.log_streamer.on_websocket_request(request, *args, **kwargs)
 
