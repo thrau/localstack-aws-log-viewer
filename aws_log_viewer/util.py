@@ -66,4 +66,9 @@ class ServiceDictEncoder(json.JSONEncoder):
             return f"bytes({len(o)})"
         if isinstance(o, HostAndPort):
             return str(o)
-        super().default(o)
+
+        # FIXME: kinda hacky way to get around serialization errors
+        try:
+            super().default(o)
+        except TypeError:
+            return str(o)
