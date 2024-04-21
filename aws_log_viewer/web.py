@@ -1,6 +1,3 @@
-import mimetypes
-from importlib import resources
-
 from localstack.http import route, Request, Response
 
 from . import static
@@ -18,13 +15,7 @@ class WebApp:
 
     @route("/")
     def index(self, request: Request, *args, **kwargs):
-        if not request.path.endswith("/"):
-            return Response(None, status=301, headers={"Location": request.url + "/"})
-        return self.load_static_file("index.html")
-
-    @route("/static/<path:path>")
-    def static(self, request: Request, path):
-        return self.load_static_file(path)
+        return Response.for_resource(static, "index.html")
 
     @route("/query")
     def query(self, request: Request, *args, **kwargs):
@@ -36,13 +27,3 @@ class WebApp:
     @route("/stream", methods=["WEBSOCKET"])
     def live_stream(self, request, *args, **kwargs):
         return self.log_streamer.on_websocket_request(request, *args, **kwargs)
-
-    def load_static_file(self, path: str) -> Response:
-        resource = resources.files(static).joinpath(path)
-        if not resource.is_file():
-            return Response("Not found", 404)
-        mimetype = mimetypes.guess_type(resource.name)
-        mimetype = (
-            mimetype[0] if mimetype and mimetype[0] else "application/octet-stream"
-        )
-        return Response(resource.open("rb"), mimetype=mimetype)
